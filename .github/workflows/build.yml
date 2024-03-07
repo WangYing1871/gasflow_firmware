@@ -11,13 +11,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04, macos-12, macos-14, windows-2022]
+        os: [ubuntu-22.04]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          path: example-application
+          path: gas_control
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -27,11 +27,11 @@ jobs:
       - name: Setup Zephyr project
         uses: zephyrproject-rtos/action-zephyr-setup@v1
         with:
-          app-path: example-application
+          app-path: gas_control
           toolchains: arm-zephyr-eabi
 
       - name: Build firmware
-        working-directory: example-application
+        working-directory: gas_control
         shell: bash
         run: |
           if [ "${{ runner.os }}" = "Windows" ]; then
@@ -40,7 +40,7 @@ jobs:
           west twister -T app -v --inline-logs --integration $EXTRA_TWISTER_FLAGS
 
       - name: Twister Tests
-        working-directory: example-application
+        working-directory: gas_control
         shell: bash
         run: |
           if [ "${{ runner.os }}" = "Windows" ]; then
