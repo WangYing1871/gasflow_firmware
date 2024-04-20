@@ -2,6 +2,7 @@
 .vscode
 *.swp
 *~
+.cache
 
 # python
 .venv
@@ -11,3 +12,6 @@
 /twister-out*
 
 __pycache__/
+
+# docs
+/doc/_build*

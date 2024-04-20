@@ -17,7 +17,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          path: gas_control
+          path: gasflow_firmware
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -27,11 +27,11 @@ jobs:
       - name: Setup Zephyr project
         uses: zephyrproject-rtos/action-zephyr-setup@v1
         with:
-          app-path: gas_control
+          app-path: gasflow_firmware
           toolchains: arm-zephyr-eabi
 
       - name: Build firmware
-        working-directory: gas_control
+        working-directory: gasflow_firmware
         shell: bash
         run: |
           if [ "${{ runner.os }}" = "Windows" ]; then
@@ -40,7 +40,7 @@ jobs:
           west twister -T app -v --inline-logs --integration $EXTRA_TWISTER_FLAGS
 
       - name: Twister Tests
-        working-directory: gas_control
+        working-directory: gasflow_firmware
         shell: bash
         run: |
           if [ "${{ runner.os }}" = "Windows" ]; then
