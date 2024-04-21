@@ -6,10 +6,12 @@
 
 struct holding_register_t {
   uint16_t value;
+  struct k_mutex mutex;
 };
 
 struct coil_register_t {
   bool value;
+  struct k_mutex mutex;
 };
 
 #define HOLDING_REG_DEFINE(addr, value)                                        \

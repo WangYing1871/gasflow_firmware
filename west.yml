@@ -20,3 +20,4 @@ manifest:
           - hal_stm32  # required by the nucleo_f302r8 board (STM32 based)
           - hal_rpi_pico
           - hal_espressif
+          - segger

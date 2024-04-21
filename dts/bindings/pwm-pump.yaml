@@ -1,9 +1,9 @@
 # Copyright (c) 2022 Nordic Semiconductor ASA
 # SPDX-License-Identifier: Apache-2.0
 
-description: PWM-driven servo motor.
+description: PWM-driven pump
 
-compatible: "pwm-servo"
+compatible: "pwm-pump"
 
 include: base.yaml
 
@@ -14,11 +14,16 @@ properties:
     description: PWM specifier driving the servo motor.
 
   min-pulse:
-    required: true
+    required: false
     type: int
     description: Minimum pulse width (nanoseconds).
 
   max-pulse:
-    required: true
+    required: false
     type: int
     description: Maximum pulse width (nanoseconds).
+
+  default-speed:
+    required: false
+    type: int
+    description: Default speed of the pump (permil).

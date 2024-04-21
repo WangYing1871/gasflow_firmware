@@ -1,0 +1,6 @@
+
+config MFC_ACU20FD
+	bool "Support for mass-flow-controller ACU20FD"
+  depends on MODBUS
+	help
+	  This option enables the ACU20FD mass-flow-controller support
