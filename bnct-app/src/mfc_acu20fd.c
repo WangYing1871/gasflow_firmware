@@ -8,8 +8,6 @@
 // modbus commuinication rx timeout (us)
 #define MBC_RX_TIMEOUT 500000
 #define ACU20FD_UINIT_ID 1
-// [todo] correct data format?
-#define ACU20FD_DEFAULT_PV 40
 
 // modbus interface handle
 static int mbc_iface;
@@ -101,9 +99,11 @@ static int mfc_acu20fd_init(void) {
     return err;
   }
 
-  // [todo]
-  /* holding_reg[REG_MFC_RATE_SV]->value = ; */
-  /* holding_reg[REG_MFC_RATE_DEFAULT]->value = ; */
+  // [todo] better method?
+  holding_reg[REG_MFC_RATE_SV]->value = 0 ;
+  holding_reg[REG_MFC_RATE_SV + 1]->value = 16928;
+  holding_reg[REG_MFC_RATE_DEFAULT]->value = 0;
+  holding_reg[REG_MFC_RATE_DEFAULT+1]->value = 16928;
 
   return 0;
 }

@@ -40,5 +40,4 @@ static int status_init(void) {
   return 0;
 }
 
-// [todo] need lower priority than peripherals init
 SYS_INIT(status_init, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);
