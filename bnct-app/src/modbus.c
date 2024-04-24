@@ -54,7 +54,8 @@ static int coil_wr(uint16_t addr, bool state) {
   }
 
   // cmds without effects, just return
-  if (state == coil_reg[addr]->value) {
+  if (state == coil_reg[addr]->value &&
+      (addr != COIL_DEFAULT_SPEED_PUMP || addr != COIL_DEFAULT_RATE_MFC)) {
     return 0;
   }
 
@@ -147,6 +148,8 @@ static int init_server(void) {
 //
 static int modbus_init(void) 
 {
+  coil_reg[COIL_STATUS_MODBUS]->value = false;
+
   k_work_init(&coil_cmd.work, coil_work_handler);
   k_work_init(&register_cmd.work, holding__work_handler);
 
@@ -155,6 +158,7 @@ static int modbus_init(void)
     printk("Modbus RTU server initialization failed");
     return err;
   }
+  coil_reg[COIL_STATUS_MODBUS]->value = true;
 
   return 0;
 }

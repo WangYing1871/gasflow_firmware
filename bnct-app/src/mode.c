@@ -143,6 +143,7 @@ inline static void setup_mix_mode() {
 int main(void) {
 
   /* power-on mode is flow-mode */
+  holding_reg[REG_SET_MODE]->value = FLOW_MODE;
   setup_flow_mode();
 
   /* init timer for mix-mode's auto-switching */

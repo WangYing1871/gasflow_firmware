@@ -52,10 +52,13 @@ HOLDING_REG_HANDLER_DEFINE(pump_holding_reg, pump_holding_register_handler);
 
 // init
 static int pump_init(void) {
+  coil_reg[COIL_STATUS_PUMP]->value = false;
+
   if (!pwm_is_ready_dt(&pump)) {
     printk("The pump is not ready.\n");
     return -ENOENT;
   }
+  coil_reg[COIL_STATUS_PUMP]->value = true;
 
   holding_reg[REG_PUMP_SPEED_SV]->value = default_speed;
   holding_reg[REG_PUMP_SPEED_DEFAULT]->value = default_speed;

@@ -25,10 +25,13 @@ static void valve_coil_register_handler(uint8_t addr) {
 COIL_REG_HANDLER_DEFINE(valve_coil_reg, valve_coil_register_handler);
 
 static int valve_init(void) {
+  coil_reg[COIL_STATUS_VALVE]->value = false;
+
   if (!gpio_is_ready_dt(&valve)) {
     printk("The valve GPIO port is not ready.\n");
     return -ENOENT;
   }
+  coil_reg[COIL_STATUS_VALVE]->value = true;
 
   return 0;
 }

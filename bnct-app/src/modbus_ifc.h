@@ -49,8 +49,19 @@
 #define COIL_ONOFF_PUMP 1
 #define COIL_ONOFF_VALVE 2
 
-/// reset command
+/// reset command (triggering with write operation)
 #define COIL_DEFAULT_SPEED_PUMP 3
-#define COIL_DEFAULT_SPEED_MFC 4
+#define COIL_DEFAULT_RATE_MFC 4
 
-#define COIL_END 5
+/// peripheral status (init success or failed)
+#define COIL_STATUS_MFC 5
+#define COIL_STATUS_BMP280 6
+#define COIL_STATUS_PUMP 7
+#define COIL_STATUS_VALVE 8
+#define COIL_STATUS_MODBUS 9
+
+/// the status of last executed modbus control cmd
+/// most notably: mfc set/get command success or not
+#define COIL_STATUS_LATEST 10
+
+#define COIL_END 11

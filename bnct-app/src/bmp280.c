@@ -28,14 +28,16 @@ POLL_HANDLER_DEFINE(bmp280_poll, bmp280_poll);
 
 //
 static int bmp280_init(void) {
-  dev = DEVICE_DT_GET(BMP280_NODE);
+  coil_reg[COIL_STATUS_BMP280]->value = false;
 
+  dev = DEVICE_DT_GET(BMP280_NODE);
   if (!device_is_ready(dev)) {
     printk("\nError: Device \"%s\" is not ready; "
            "check the driver initialization logs for errors.\n",
            dev->name);
     return -ENOENT;
   }
+  coil_reg[COIL_STATUS_BMP280]->value = true;
 
   return 0;
 }
