@@ -28,8 +28,11 @@ static uint16_t __attribute__((unused)) acu20fd_cancel_zero[] = {0x3F80, 0x0000}
 
 #define ACU20FD_DEAD_TIME_MS 200
 
-/* set digit mode */
-int acu20fd_init_digit_mode(const int iface, const uint8_t uid) {
+/* set work mode: analog (digit_mode: false), digi (digit_mode: true) */
+int acu20fd_init(const int iface, const uint8_t uid, bool digit_mode) {
+
+  if (!digit_mode) return 0;
+
   int err = modbus_write_holding_regs(iface, uid, ACU20FD_REG_SET_MODE,
                                       acu20fd_digit_mode,
                                       ARRAY_SIZE(acu20fd_digit_mode));

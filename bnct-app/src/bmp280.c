@@ -14,12 +14,12 @@ static void bmp280_poll() {
 
   // [todo] value interpretation to be confirmed
   sensor_channel_get(dev, SENSOR_CHAN_AMBIENT_TEMP, &temp);
-  holding_reg[REG_TEMPERATURE_INT]->value = temp.val1 & BIT_MASK(16);
-  holding_reg[REG_TEMPERATURE_FLT]->value = temp.val2 & BIT_MASK(16); // = flt/1000000
+  holding_reg[REG_TEMPERATURE_DEC]->value = temp.val1 & BIT_MASK(16);
+  holding_reg[REG_TEMPERATURE_FRA]->value = temp.val2 & BIT_MASK(16); // = flt/1000000
 
   sensor_channel_get(dev, SENSOR_CHAN_PRESS, &pressure);
-  holding_reg[REG_PRESSURE_INT]->value = pressure.val1 & BIT_MASK(16);
-  holding_reg[REG_PRESSURE_FLT]->value = pressure.val2 & BIT_MASK(16); // = flt/1000000
+  holding_reg[REG_PRESSURE_DEC]->value = pressure.val1 & BIT_MASK(16);
+  holding_reg[REG_PRESSURE_FRA]->value = pressure.val2 & BIT_MASK(16); // = flt/1000000
 
   return;
 }

@@ -91,7 +91,7 @@ static int holding_reg_wr(uint16_t addr, uint16_t reg) {
     return 0;
   }
 
-  if (addr == REG_PUMP_SPEED &&
+  if (addr == REG_PUMP_SPEED_SV &&
       (reg < holding_reg[REG_PUMP_SPEED_MIN]->value ||
        reg > holding_reg[REG_PUMP_SPEED_MAX]->value))
     return -ENOTSUP;

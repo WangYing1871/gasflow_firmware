@@ -14,3 +14,4 @@ target_sources(app PRIVATE
 )
 
 target_sources_ifdef(CONFIG_BME280 app PRIVATE src/bmp280.c)
+target_sources_ifdef(CONFIG_MFC_ACU20FD app PRIVATE src/mfc_acu20fd.c)
