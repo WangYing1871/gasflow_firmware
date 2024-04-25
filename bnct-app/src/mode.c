@@ -26,7 +26,6 @@ static void mode_holding_register_handler(uint8_t addr) {
     return;
 
   // lock & raise signal
-  /* k_mutex_lock(&holding_reg[REG_SET_MODE]->mutex, K_FOREVER); */
   k_poll_signal_raise(mode_event.signal, 0);
 }
 
@@ -46,28 +45,25 @@ enum working_state {
   RECYCLE_STATE
 };
 
-inline static void lock_mode()
+inline static void lock_state()
 {
   k_mutex_lock(&coil_reg[COIL_ONOFF_PUMP]->mutex, K_FOREVER);
   k_mutex_lock(&coil_reg[COIL_ONOFF_MFC]->mutex, K_FOREVER);
   k_mutex_lock(&coil_reg[COIL_ONOFF_VALVE]->mutex, K_FOREVER);
 
   k_mutex_lock(&holding_reg[REG_CUR_STATE]->mutex, K_FOREVER);
-  k_mutex_lock(&holding_reg[REG_CUR_MODE]->mutex, K_FOREVER);
 }
 
-inline static void unlock_mode() {
+inline static void unlock_state() {
   k_mutex_unlock(&coil_reg[COIL_ONOFF_PUMP]->mutex);
   k_mutex_unlock(&coil_reg[COIL_ONOFF_MFC]->mutex);
   k_mutex_unlock(&coil_reg[COIL_ONOFF_VALVE]->mutex);
 
-  k_mutex_unlock(&holding_reg[REG_CUR_MODE]->mutex);
   k_mutex_unlock(&holding_reg[REG_CUR_STATE]->mutex);
 }
 
-inline static void setup_flow_mode() {
-
-  lock_mode();
+inline static void setup_flow_state() {
+  lock_state();
   
   // 1. stop pump
   coil_reg[COIL_ONOFF_PUMP]->value = false;
@@ -83,13 +79,12 @@ inline static void setup_flow_mode() {
 
   // 4. update current state
   holding_reg[REG_CUR_STATE]->value = FLOW_STATE;
-  holding_reg[REG_CUR_MODE]->value = FLOW_MODE;
 
-  unlock_mode();
+  unlock_state();
 }
 
-inline static void setup_recycle_mode() {
-  lock_mode();
+inline static void setup_recycle_state() {
+  lock_state();
   
   // 1. close valve
   coil_reg[COIL_ONOFF_VALVE]->value = false;
@@ -105,9 +100,14 @@ inline static void setup_recycle_mode() {
 
   // 4. update current state
   holding_reg[REG_CUR_STATE]->value = RECYCLE_STATE;
-  holding_reg[REG_CUR_MODE]->value = RECYCLE_MODE;
 
-  unlock_mode();
+  unlock_state();
+}
+
+inline static void setup_mode(enum working_mode mode) {
+  k_mutex_lock(&holding_reg[REG_CUR_MODE]->mutex, K_FOREVER);
+  holding_reg[REG_CUR_MODE]->value = mode;
+  k_mutex_unlock(&holding_reg[REG_CUR_MODE]->mutex);
 }
 
 /* mix-mode timer */
@@ -115,14 +115,14 @@ static struct k_timer to_flow_mode_timer;
 static struct k_timer to_recycle_mode_timer;
 
 static void to_flow_mode_timer_callback(struct k_timer *timer) {
-  setup_flow_mode();
+  setup_flow_state();
   k_timer_start(&to_recycle_mode_timer, // one-shot timer
                 K_SECONDS(holding_reg[REG_FLOW_DURATION]->value), K_NO_WAIT);
   return;
 }
 
 static void to_recycle_mode_timer_callback(struct k_timer *timer) {
-  setup_recycle_mode();
+  setup_recycle_state();
   k_timer_start(&to_flow_mode_timer, // one-shot timer
                 K_SECONDS(holding_reg[REG_RECYCLE_DURATION]->value), K_NO_WAIT);
   return;
@@ -142,9 +142,10 @@ inline static void setup_mix_mode() {
 
 int main(void) {
 
-  /* power-on mode is flow-mode */
+  /* power-on mode init: flow-mode */
   holding_reg[REG_SET_MODE]->value = FLOW_MODE;
-  setup_flow_mode();
+  setup_flow_state();
+  setup_mode(FLOW_MODE);
 
   /* init timer for mix-mode's auto-switching */
   holding_reg[REG_FLOW_DURATION]->value = DEFAULT_FLOW_DURATION;
@@ -174,13 +175,16 @@ int main(void) {
 
     switch (holding_reg[REG_SET_MODE]->value) {
     case FLOW_MODE:
-      setup_flow_mode();
+      setup_flow_state();
+      setup_mode(FLOW_MODE);
       break;
     case RECYCLE_MODE:
-      setup_recycle_mode();
+      setup_recycle_state();
+      setup_mode(RECYCLE_MODE);
       break;
     case MIX_MODE:
       setup_mix_mode();
+      setup_mode(MIX_MODE);
       break;
     default:
       break;
@@ -189,8 +193,6 @@ int main(void) {
     // ready for next mode-switching
     k_poll_signal_reset(mode_event.signal);
     mode_event.state = K_POLL_STATE_NOT_READY;
-
-    /* k_mutex_unlock(&holding_reg[REG_SET_MODE]->mutex); */
   }
 
   return 0;
