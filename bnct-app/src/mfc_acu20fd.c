@@ -46,11 +46,13 @@ static void mfc_acu20fd_coil_handler(uint8_t addr) {
 
   switch (addr) {
   case COIL_ONOFF_MFC:
-    uint16_t buf[2] = {holding_reg[REG_MFC_RATE_SV]->value,
-                       holding_reg[REG_MFC_RATE_SV + 1]->value};
+    uint16_t buf[2] = {0, 0};
+    if (coil_reg[COIL_ONOFF_MFC]->value) {
+        buf[0] = holding_reg[REG_MFC_RATE_SV]->value;
+        buf[1] = holding_reg[REG_MFC_RATE_SV + 1]->value;
+    };
     coil_reg[COIL_STATUS_LATEST]->value =
         (acu20fd_set_pv(mbc_iface, mbc_uid, buf) < 0) ? false : true;
-
     break;
   case COIL_DEFAULT_RATE_MFC:
     holding_reg[REG_MFC_RATE_SV]->value =
