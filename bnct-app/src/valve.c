@@ -12,7 +12,7 @@
 
 static const struct gpio_dt_spec valve = GPIO_DT_SPEC_GET(VALVE_NODE, gpios);
 
-static void valve_coil_register_handler(uint8_t addr) {
+static void valve_coil_register_handler(uint16_t addr) {
   if (addr == COIL_ONOFF_VALVE) {
     gpio_pin_configure_dt(&valve, coil_reg[COIL_ONOFF_VALVE]->value
                                       ? GPIO_OUTPUT_ACTIVE

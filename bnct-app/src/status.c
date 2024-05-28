@@ -21,7 +21,7 @@ static void status_timer_callback(struct k_timer *timer) {
 static K_TIMER_DEFINE(status_timer, status_timer_callback, NULL);
 
 /* holding register handler */
-static void status_holding_register_handler(uint8_t addr) {
+static void status_holding_register_handler(uint16_t addr) {
   if (addr == REG_UPDATE_INTERVAL) {
     k_timer_start(&status_timer, K_NO_WAIT, K_MSEC(holding_reg[addr]->value));
   }

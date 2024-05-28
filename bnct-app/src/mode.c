@@ -21,7 +21,7 @@ static struct k_poll_signal mode_sig = K_POLL_SIGNAL_INITIALIZER(mode_sig);
 static struct k_poll_event mode_event = K_POLL_EVENT_INITIALIZER(
     K_POLL_TYPE_SIGNAL, K_POLL_MODE_NOTIFY_ONLY, &mode_sig);
 
-static void mode_holding_register_handler(uint8_t addr) {
+static void mode_holding_register_handler(uint16_t addr) {
   if (addr != REG_SET_MODE)
     return;
 

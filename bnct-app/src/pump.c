@@ -20,7 +20,7 @@ static const uint32_t default_speed = DT_PROP(PUMP_NODE, default_speed); // unit
 // [todo] poll handler (present speed: REG_PUMP_SPEED_PV)
 
 // coil handler
-static void pump_coil_register_handler(uint8_t addr) {
+static void pump_coil_register_handler(uint16_t addr) {
 
   switch (addr) {
   case COIL_ONOFF_PUMP:
@@ -41,10 +41,12 @@ static void pump_coil_register_handler(uint8_t addr) {
 COIL_REG_HANDLER_DEFINE(pump_coil_reg, pump_coil_register_handler);
 
 // holding register handler
-static void pump_holding_register_handler(uint8_t addr) {
+static void pump_holding_register_handler(uint16_t addr) {
   if (addr == REG_PUMP_SPEED_SV && coil_reg[COIL_ONOFF_PUMP]->value) {
       pwm_set_pulse_dt(&pump, holding_reg[REG_PUMP_SPEED_SV]->value * step);
   }
+
+
   return;
 }
 
