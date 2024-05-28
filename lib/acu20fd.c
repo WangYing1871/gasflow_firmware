@@ -26,7 +26,7 @@ static uint16_t __attribute__((unused)) acu20fd_analog_mode[] = {0x0000, 0x41C8}
 static uint16_t __attribute__((unused)) acu20fd_set_zero[] = {0x0000, 0x0000};
 static uint16_t __attribute__((unused)) acu20fd_cancel_zero[] = {0x3F80, 0x0000};
 
-#define ACU20FD_DEAD_TIME_MS 200
+#define ACU20FD_DEAD_TIME_MS 500
 
 /* set work mode: analog (digit_mode: false), digi (digit_mode: true) */
 int acu20fd_init(const int iface, const uint8_t uid, bool digit_mode) {

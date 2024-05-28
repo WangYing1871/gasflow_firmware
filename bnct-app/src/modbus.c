@@ -17,7 +17,7 @@
 ////// k_work to process coil/register commands
 struct ctrl_cmd_t {
   struct k_work work;
-  uint8_t addr;
+  uint16_t addr;
 };
 
 static struct ctrl_cmd_t coil_cmd = {.addr = ARRAY_SIZE(coil_reg)};

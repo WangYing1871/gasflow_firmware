@@ -26,9 +26,10 @@ static void mfc_acu20fd_poll() {
 POLL_HANDLER_DEFINE(acu20fd_poll, mfc_acu20fd_poll);
 
 /* set pv */
-static void mfc_acu20fd_holding_handler(uint8_t addr) {
+static void mfc_acu20fd_holding_handler(uint16_t addr) {
 
-  if (addr == REG_MFC_RATE_SV && coil_reg[COIL_ONOFF_MFC]->value) {
+  if ((addr == REG_MFC_RATE_SV || addr == (REG_MFC_RATE_SV+1)) && 
+      (coil_reg[COIL_ONOFF_MFC]->value)) {
     uint16_t buf[2] = {holding_reg[REG_MFC_RATE_SV]->value,
                        holding_reg[REG_MFC_RATE_SV + 1]->value};
 
@@ -42,7 +43,7 @@ static void mfc_acu20fd_holding_handler(uint8_t addr) {
 HOLDING_REG_HANDLER_DEFINE(acu20fd_holding, mfc_acu20fd_holding_handler);
 
 /* turn on/off mfc */
-static void mfc_acu20fd_coil_handler(uint8_t addr) {
+static void mfc_acu20fd_coil_handler(uint16_t addr) {
 
   switch (addr) {
   case COIL_ONOFF_MFC:
@@ -53,6 +54,8 @@ static void mfc_acu20fd_coil_handler(uint8_t addr) {
     };
     coil_reg[COIL_STATUS_LATEST]->value =
         (acu20fd_set_pv(mbc_iface, mbc_uid, buf) < 0) ? false : true;
+
+
     break;
   case COIL_DEFAULT_RATE_MFC:
     holding_reg[REG_MFC_RATE_SV]->value =
@@ -101,6 +104,9 @@ static int mfc_acu20fd_init(void) {
     printk("Modbus RTU client initialization failed\n");
     return err;
   }
+
+  // needed for mfc power-up
+  k_msleep(1000);
 
   err = acu20fd_init(mbc_iface, mbc_uid, true);
   if (err < 0) {

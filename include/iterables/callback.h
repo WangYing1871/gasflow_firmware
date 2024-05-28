@@ -16,7 +16,7 @@ struct status_handler_t {
 
 //
 struct coil_register_handler_t {
-  void (*const callback)(uint8_t addr);
+  void (*const callback)(uint16_t addr);
 };
 
 #define COIL_REG_HANDLER_DEFINE(_name, _cb)                                   \
@@ -27,7 +27,7 @@ struct coil_register_handler_t {
 
 //
 struct holding_register_handler_t {
-  void (*const callback)(uint8_t addr);
+  void (*const callback)(uint16_t addr);
 };
 
 #define HOLDING_REG_HANDLER_DEFINE(_name, _cb)                \
